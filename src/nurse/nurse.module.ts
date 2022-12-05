@@ -1,4 +1,11 @@
 import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
 
-@Module({})
+import { Nurse, NurseSchema } from './nurse.schema';
+
+@Module({
+  imports: [
+    MongooseModule.forFeature([{ name: Nurse.name, schema: NurseSchema }]),
+  ],
+})
 export class NurseModule {}

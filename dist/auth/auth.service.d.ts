@@ -1,8 +1,8 @@
 export declare class AuthService {
-    login(): {
+    signup(): {
         message: string;
     };
-    signup(): {
+    login(): {
         message: string;
     };
 }

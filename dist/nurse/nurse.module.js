@@ -8,10 +8,16 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.NurseModule = void 0;
 const common_1 = require("@nestjs/common");
+const mongoose_1 = require("@nestjs/mongoose");
+const nurse_schema_1 = require("./nurse.schema");
 let NurseModule = class NurseModule {
 };
 NurseModule = __decorate([
-    (0, common_1.Module)({})
+    (0, common_1.Module)({
+        imports: [
+            mongoose_1.MongooseModule.forFeature([{ name: nurse_schema_1.Nurse.name, schema: nurse_schema_1.NurseSchema }]),
+        ],
+    })
 ], NurseModule);
 exports.NurseModule = NurseModule;
 //# sourceMappingURL=nurse.module.js.map
