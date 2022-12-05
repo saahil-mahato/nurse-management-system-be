@@ -5,7 +5,7 @@ import { Timestamp, timestamp } from 'rxjs';
 
 import { User } from 'src/user/user.schema';
 
-export type nurseDocument = HydratedDocument<Nurse>;
+export type NurseDocument = HydratedDocument<Nurse>;
 
 @Schema()
 export class Nurse extends User {
