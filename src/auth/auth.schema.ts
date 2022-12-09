@@ -19,7 +19,7 @@ export class Auth {
   username: string;
 
   @Prop({ type: String, required: true })
-  passwordHash: string;
+  password: string;
 }
 
 export const AuthSchema = SchemaFactory.createForClass(Auth);

@@ -10,5 +10,13 @@ export class SignupDto {
   username: string;
 
   @ApiProperty({ type: String })
-  passwordHash: string;
+  password: string;
+}
+
+export class LoginDto {
+  @ApiProperty({ type: String })
+  username: string;
+
+  @ApiProperty({ type: String })
+  password: string;
 }
