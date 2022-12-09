@@ -12,6 +12,13 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     super();
   }
 
+  /**
+   * Function to validate the login attempt.
+   *
+   * @param username - the username of the user.
+   * @param password - the password of the user.
+   * @returns {Promise<Auth>}
+   */
   async validate(username: string, password: string): Promise<Auth> {
     const loginDto: LoginDto = {
       username,

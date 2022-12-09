@@ -10,6 +10,12 @@ import { User, UserDocument } from './user.schema';
 export class UserService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
+  /**
+   * Function to add a new user.
+   *
+   * @param {CreateUserDto} createUserDto - the user details
+   * @returns {Promise<User>}
+   */
   async addNewUser(createUserDto: CreateUserDto): Promise<User> {
     const createdUser = new this.userModel(createUserDto);
 

@@ -13,7 +13,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: any) {
+  /**
+   * Function to validate the payload of authentication.
+   *
+   * @param payload - the payload of user.
+   * @returns {Promise<object>}
+   */
+  async validate(payload: any): Promise<object> {
     return { _id: payload.sub, username: payload.username };
   }
 }

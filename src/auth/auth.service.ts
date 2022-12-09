@@ -20,6 +20,11 @@ export class AuthService {
     @InjectModel(Auth.name) private authModel: Model<AuthDocument>,
   ) {}
 
+  /**
+   * Function to signup a new user.
+   * @param signupDto - the user details.
+   * @returns {Promise<Auth>}
+   */
   async signup(signupDto: SignupDto): Promise<Auth> {
     const createdUser: User = await this.userService.addNewUser(
       signupDto.userDetails,
@@ -34,12 +39,23 @@ export class AuthService {
     return createdAuth.save();
   }
 
+  /**
+   * Function to find the auth by username.
+   *
+   * @param {string} username - the username of the user.
+   * @returns {Promise<Auth>}
+   */
   async findByUsername(username: string): Promise<Auth> {
     const auth = this.authModel.findOne({ username });
 
     return auth;
   }
 
+  /**
+   * Function to check if the user attempting to login is a valid user.
+   * @param {LoginDto} loginDto - the login details.
+   * @returns {Promise<Auth>}
+   */
   async validateUser(loginDto: LoginDto): Promise<Auth> {
     const auth = await this.findByUsername(loginDto.username);
 
@@ -54,7 +70,13 @@ export class AuthService {
     return auth;
   }
 
-  async login(user: any) {
+  /**
+   * Function to login a user and send the access token.
+   *
+   * @param {any} user - the user object
+   * @returns {{Promise<{ access_token: string }>}}
+   */
+  async login(user: any): Promise<{ access_token: string }> {
     const payload = { username: user.username, sub: user._id };
 
     return {

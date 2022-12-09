@@ -12,10 +12,11 @@ export class Auth {
     type: mongoose.Schema.Types.ObjectId,
     ref: User.name,
     required: true,
+    unique: true,
   })
   user: User;
 
-  @Prop({ type: String, required: true })
+  @Prop({ type: String, required: true, unique: true })
   username: string;
 
   @Prop({ type: String, required: true })
