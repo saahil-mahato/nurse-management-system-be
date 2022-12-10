@@ -13,7 +13,7 @@ export class SignupDto {
   password: string;
 }
 
-export class LoginDto {
+export class SigninDto {
   @ApiProperty({ type: String })
   username: string;
 

@@ -6,7 +6,7 @@ import * as bcrypt from 'bcrypt';
 
 import { Model } from 'mongoose';
 
-import { LoginDto, SignupDto } from './auth.dto';
+import { SigninDto, SignupDto } from './auth.dto';
 import { Auth, AuthDocument } from './auth.schema';
 
 import { User } from 'src/user/user.schema';
@@ -32,7 +32,7 @@ export class AuthService {
     const authData = {
       user: createdUser,
       username: signupDto.username,
-      password: await bcrypt.hash(signupDto.password, 10),
+      password: await bcrypt.hash(signupDto.password, 8),
     };
     const createdAuth = new this.authModel(authData);
 
@@ -52,18 +52,18 @@ export class AuthService {
   }
 
   /**
-   * Function to check if the user attempting to login is a valid user.
-   * @param {LoginDto} loginDto - the login details.
+   * Function to check if the user attempting to signin is a valid user.
+   * @param {SigninDto} signinDto - the signin details.
    * @returns {Promise<Auth>}
    */
-  async validateUser(loginDto: LoginDto): Promise<Auth> {
-    const auth = await this.findByUsername(loginDto.username);
+  async validateUser(signinDto: SigninDto): Promise<Auth> {
+    const auth = await this.findByUsername(signinDto.username);
 
     if (!auth) {
       return null;
     }
 
-    if (!(await bcrypt.compare(loginDto.password, auth.password))) {
+    if (!(await bcrypt.compare(signinDto.password, auth.password))) {
       return null;
     }
 
@@ -71,12 +71,12 @@ export class AuthService {
   }
 
   /**
-   * Function to login a user and send the access token.
+   * Function to signin a user and send the access token.
    *
    * @param {any} user - the user object
    * @returns {{Promise<{ access_token: string }>}}
    */
-  async login(user: any): Promise<{ access_token: string }> {
+  async signin(user: any): Promise<{ access_token: string }> {
     const payload = { username: user.username, sub: user._id };
 
     return {

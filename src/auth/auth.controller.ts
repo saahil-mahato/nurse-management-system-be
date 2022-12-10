@@ -21,13 +21,13 @@ export class AuthController {
   }
 
   /**
-   * Function to login a new user.
-   * @param {any} req - the login request.
+   * Function to signin a new user.
+   * @param {any} req - the signin request.
    * @returns {Promise<{ access_token: string }>}
    */
   @UseGuards(AuthGuard('local'))
-  @Post('login')
-  async login(@Request() req: any): Promise<{ access_token: string }> {
-    return this.authService.login(req.user);
+  @Post('signin')
+  async signin(@Request() req: any): Promise<{ access_token: string }> {
+    return this.authService.signin(req.user);
   }
 }
