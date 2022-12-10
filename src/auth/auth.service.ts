@@ -1,5 +1,9 @@
 import { JwtService } from '@nestjs/jwt';
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
 import * as bcrypt from 'bcrypt';
@@ -25,18 +29,24 @@ export class AuthService {
    * @param signupDto - the user details.
    * @returns {Promise<Auth>}
    */
-  async signup(signupDto: SignupDto): Promise<Auth> {
+  async signup(signupDto: SignupDto): Promise<{ message: string }> {
     const createdUser: User = await this.userService.addNewUser(
       signupDto.userDetails,
     );
+
     const authData = {
       user: createdUser,
       username: signupDto.username,
       password: await bcrypt.hash(signupDto.password, 8),
     };
-    const createdAuth = new this.authModel(authData);
 
-    return createdAuth.save();
+    try {
+      await new this.authModel(authData).save();
+
+      return { message: 'Success' };
+    } catch (err) {
+      throw new BadRequestException('Username already exists');
+    }
   }
 
   /**
@@ -76,11 +86,32 @@ export class AuthService {
    * @param {any} user - the user object
    * @returns {{Promise<{ access_token: string }>}}
    */
-  async signin(user: any): Promise<{ access_token: string }> {
-    const payload = { username: user.username, sub: user._id };
+  async signin(user: any): Promise<string> {
+    const payload = { username: user.username, id: user._id };
 
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
+    return this.jwtService.sign(payload);
+  }
+
+  /**
+   * Function to verify a cookie
+   *
+   * @param {any} cookie
+   */
+  async verifyCookie(cookie: any) {
+    try {
+      const data = this.jwtService.verify(cookie);
+
+      if (!data) {
+        throw new UnauthorizedException();
+      }
+
+      const auth = await this.authModel.findById(data.id).populate('user');
+
+      const user = auth.user;
+
+      return user;
+    } catch (err) {
+      throw new UnauthorizedException();
+    }
   }
 }

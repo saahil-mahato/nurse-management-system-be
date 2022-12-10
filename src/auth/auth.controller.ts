@@ -1,9 +1,19 @@
-import { Body, Request, Controller, Post, UseGuards } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
+import {
+  Res,
+  Get,
+  Body,
+  Post,
+  Request,
+  UseGuards,
+  Controller,
+  Req,
+} from '@nestjs/common';
 
-import { Auth } from './auth.schema';
+import { Response, Request as ExpressRequest } from 'express';
+
 import { SignupDto } from './auth.dto';
 import { AuthService } from './auth.service';
+import { LocalAuthGuard } from './local-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -16,18 +26,42 @@ export class AuthController {
    * @returns {Promise<Auth>}
    */
   @Post('signup')
-  async signup(@Body() signupDto: SignupDto): Promise<Auth> {
+  async signup(@Body() signupDto: SignupDto): Promise<{ message: string }> {
     return this.authService.signup(signupDto);
   }
 
   /**
    * Function to signin a new user.
    * @param {any} req - the signin request.
-   * @returns {Promise<{ access_token: string }>}
+   * @returns {Promise<any>}
    */
-  @UseGuards(AuthGuard('local'))
+  @UseGuards(LocalAuthGuard)
   @Post('signin')
-  async signin(@Request() req: any): Promise<{ access_token: string }> {
-    return this.authService.signin(req.user);
+  async signin(
+    @Request() req: any,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<{ message: string }> {
+    const jwt = await this.authService.signin(req.user);
+
+    response.cookie('jwt', jwt, { httpOnly: true });
+
+    return { message: 'success' };
+  }
+
+  @Get('user')
+  async user(@Req() request: ExpressRequest) {
+    const cookie = request.cookies['jwt'];
+    const data = await this.authService.verifyCookie(cookie);
+
+    return data;
+  }
+
+  @Post('signout')
+  async signout(
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<{ message: string }> {
+    response.clearCookie('jwt');
+
+    return { message: 'Success' };
   }
 }

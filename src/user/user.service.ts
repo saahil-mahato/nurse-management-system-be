@@ -21,4 +21,16 @@ export class UserService {
 
     return createdUser.save();
   }
+
+  /**
+   * Function to find a user by id.
+   *
+   * @param {string} id - the id of the user.
+   * @returns {Promise<User>}
+   */
+  async findById(id: string): Promise<User> {
+    const user = this.userModel.findById(id);
+
+    return user;
+  }
 }
