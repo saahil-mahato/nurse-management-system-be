@@ -43,7 +43,7 @@ export class AuthController {
   ): Promise<{ message: string }> {
     const jwt = await this.authService.signin(req.user);
 
-    response.cookie('jwt', jwt, { httpOnly: true });
+    response.cookie('access_token', jwt, { httpOnly: true });
 
     return { message: 'success' };
   }
