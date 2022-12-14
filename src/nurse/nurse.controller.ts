@@ -1,23 +1,12 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 
 import { Nurse } from './nurse.schema';
-import { CreateNurseDto } from './nurse.dto';
+import { NurseDto } from './nurse.dto';
 import { NurseService } from './nurse.service';
 
 @Controller('nurses')
 export class NurseController {
   constructor(private nurseService: NurseService) {}
-
-  /**
-   * Endpoint to add a new nurse.
-   *
-   * @param {CreateNurseDto} createNurseDto - the nurse details
-   * @returns {Promise<Nurse>}
-   */
-  @Post('add-new-nurse')
-  async create(@Body() createNurseDto: CreateNurseDto): Promise<Nurse> {
-    return this.nurseService.addNewNurse(createNurseDto);
-  }
 
   /**
    * Endpoint to get all nurses.
@@ -27,5 +16,30 @@ export class NurseController {
   @Get('/')
   async getAll(): Promise<Array<Nurse>> {
     return this.nurseService.getAllNurses();
+  }
+
+  /**
+   * Endpoint to add a new nurse.
+   *
+   * @param {nurseDto} nurseDto - the nurse details
+   * @returns {Promise<Nurse>}
+   */
+  @Post('/')
+  async create(@Body() nurseDto: NurseDto): Promise<Nurse> {
+    return this.nurseService.addNewNurse(nurseDto);
+  }
+
+  /**
+   * Endpoint to update a nurse.
+   *
+   * @param {nurseDto} nurseDto - the nurse details
+   * @returns {Promise<Nurse>}
+   */
+  @Put('/:id')
+  async update(
+    @Param('id') id: string,
+    @Body() nurseDto: NurseDto,
+  ): Promise<Nurse> {
+    return this.nurseService.updateNurse(id, nurseDto);
   }
 }

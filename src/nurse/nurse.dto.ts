@@ -6,7 +6,7 @@ import { Timestamp, timestamp } from 'rxjs';
 
 import { CreateUserDto } from 'src/user/user.dto';
 
-export class CreateNurseDto extends CreateUserDto {
+export class NurseDto extends CreateUserDto {
   @IsNotEmpty()
   @ApiProperty({ type: String, required: true })
   department: string;
