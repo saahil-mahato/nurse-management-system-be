@@ -18,7 +18,15 @@ export class NurseService {
    * @returns {Promise<Array<Nurse>>}
    */
   async getAllNurses(): Promise<Array<Nurse>> {
-    return this.nurseModel.find().exec();
+    return this.nurseModel
+      .find()
+      .sort({
+        isRoundingManager: 'desc',
+        firstName: 'asc',
+        middleName: 'asc',
+        lastName: 'asc',
+      })
+      .exec();
   }
 
   /**
@@ -43,10 +51,21 @@ export class NurseService {
     if (!(await this.nurseModel.findById(id))) {
       throw new BadRequestException('Nurse does not exist');
     }
+
     const updatedNurse = this.nurseModel.findByIdAndUpdate(id, nurseDto, {
       new: true,
     });
 
     return updatedNurse;
+  }
+
+  async deleteNurse(id: string): Promise<{ message: string }> {
+    if (!(await this.nurseModel.findById(id))) {
+      throw new BadRequestException('Nurse does not exist');
+    }
+
+    this.nurseModel.findByIdAndDelete(id).exec();
+
+    return { message: 'Nurse successfully deleted' };
   }
 }

@@ -9,7 +9,7 @@ import {
   Req,
 } from '@nestjs/common';
 
-import { Response, Request as ExpressRequest } from 'express';
+import { Response, Request as RequestType } from 'express';
 
 import { SignupDto } from './auth.dto';
 import { AuthService } from './auth.service';
@@ -49,8 +49,8 @@ export class AuthController {
   }
 
   @Get('user')
-  async user(@Req() request: ExpressRequest) {
-    const cookie = request.cookies['jwt'];
+  async user(@Req() request: RequestType) {
+    const cookie = request.cookies['access_token'];
     const data = await this.authService.verifyCookie(cookie);
 
     return data;
@@ -60,7 +60,7 @@ export class AuthController {
   async signout(
     @Res({ passthrough: true }) response: Response,
   ): Promise<{ message: string }> {
-    response.clearCookie('jwt');
+    response.clearCookie('access_token');
 
     return { message: 'Success' };
   }
